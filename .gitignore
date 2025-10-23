@@ -1,0 +1,37 @@
+# Python
+_pycache_/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.egg-info/
+*.egg
+*.log
+
+# Virtual environment
+venv/
+.venv/
+
+# uv and build
+uv.lock
+build/
+dist/
+.
+# Environment variables
+.env
+
+# IDE files
+.vscode/
+.idea/
+*.iml
+
+# Testing / coverage
+.coverage
+.pytest_cache/
+htmlcov/
+
+
+# Mac / Windows
+.DS_Store
+Thumbs.db
+. i d e a /

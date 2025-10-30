@@ -8,7 +8,7 @@ from app.model.Flight_Tracer import FlightTracer
 app = FastAPI(docs_url="/docs")
 app.include_router(chat.router)
 
-# Initialize database tables
+
 Base.metadata.create_all(bind=engine)
 
 def main():

@@ -29,3 +29,4 @@ def show_ticket_summary(state: FlightTracer) -> FlightTracer:
     print(f"Total (LKR): {state.get('ticket_price_lkr', 'N/A')}")
     print("--------------------------------")
     return state
+

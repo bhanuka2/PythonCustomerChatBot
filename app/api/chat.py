@@ -10,3 +10,4 @@ async def send_message(
         chat_service: ChatService = Depends(get_chat_service)
 ):
     return await chat_service.send_message(request)
+

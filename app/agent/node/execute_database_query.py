@@ -6,7 +6,7 @@ from sqlalchemy import or_
 
 
 def execute_database_query(state: State) -> State:
-    """Execute database query to fetch flight information"""
+
     print("[EXECUTE_DB] Executing database query")
 
     user_query = state.get("user_query", "").lower()

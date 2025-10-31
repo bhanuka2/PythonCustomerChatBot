@@ -1,32 +1,26 @@
-from app.agent.graph import flight_graph
-from app.model.Flight_Tracer import FlightTracer
+from http.client import responses
 
-from langgraph.graph import StateGraph, START, END
+from langchain_core.messages import SystemMessage, HumanMessage
+from langchain_openai import ChatOpenAI
 
-builder = StateGraph(dict)
+from app.agent.state import State
+from app.core.config import settings
 
-builder.add_node("get_flight_details", flight_graph)
-builder.add_edge(START, "get_flight_details")
-builder.add_edge("get_flight_details", END)
 
-graph = builder.compile()
-graph.invoke({})
+def chatbot_node(state: State )-> State:
+    chatGPT = ChatOpenAI(model_name="gpt-5-nano", temperature=0,openai_api_key=settings.OPENAI_API_KEY)
 
-def convert_to_lkr(state: FlightTracer) -> FlightTracer:
-    usd_to_lkr = 325.50
-    usd_amount = state.get("ticket_price") or state.get("total_price_usd") or 0
-    state["ticket_price_lkr"] = usd_amount * usd_to_lkr
-    return state
+    system_message = (
+        "You are a helpful assistant that helps users find information about flights. "
+        "Use the user's query to provide accurate and concise information."
+        "If it is a greeting or casual remark, respond in a friendly manner but keep it brief."
+    )
 
-def show_ticket_summary(state: FlightTracer) -> FlightTracer:
-    print("---- Flight Ticket Summary ----")
-    print(f"Airline: {state.get('airline', 'N/A')}")
-    print(f"Flight No: {state.get('flight_number', 'N/A')}")
-    print(f"From: {state.get('origin', 'N/A')} To: {state.get('destination', 'N/A')}")
-    print(f"Departure: {state.get('departure', 'N/A')}")
-    print(f"Arrival: {state.get('arrival', 'N/A')}")
-    print(f"Total (USD): {state.get('ticket_price', state.get('total_price_usd', 'N/A'))}")
-    print(f"Total (LKR): {state.get('ticket_price_lkr', 'N/A')}")
-    print("--------------------------------")
+    user_message = state.get("user_query", "")
+
+    messages_LLM = [SystemMessage(content=system_message),HumanMessage(content=user_message)]
+    response = chatGPT.invoke(messages_LLM)
+
+    state["response"] = response.content
     return state
 

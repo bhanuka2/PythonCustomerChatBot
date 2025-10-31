@@ -8,6 +8,7 @@ dependencies = [
     "cryptography>=44.0.0",
     "fastapi>=0.119.1",
     "langchain>=1.0.2",
+    "langchain-openai>=1.0.1",
     "langgraph>=1.0.1",
     "notebook>=7.4.7",
     "openai>=2.6.0",
@@ -15,5 +16,6 @@ dependencies = [
     "pymysql>=1.1.0",
     "python-dotenv>=1.2.1",
     "sqlalchemy>=2.0.44",
+    "state>=0.1.1.dev0",
     "uvicorn>=0.38.0",
 ]

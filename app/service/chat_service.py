@@ -1,6 +1,10 @@
 # app/service/chat_service.py
+from pyexpat.errors import messages
 from sqlalchemy.orm import Session
 from sqlalchemy import or_
+
+from app.agent.graph import gen_graph
+from app.agent.state import State
 from app.core.database import SessionLocal
 from app.model.Flight_Tracer import FlightTracer
 from app.schema.chat import MessageRequestSchema, MessageResponseSchema
@@ -13,7 +17,7 @@ class ChatService:
 
     def __init__(self):
         self.db: Session = SessionLocal()
-        # In-memory chat history (replace with DB table for persistence)
+        self.agent = gen_graph()
         self.chat_history = {}
 
     async def send_message(self, request: MessageRequestSchema) -> MessageResponseSchema:
@@ -25,14 +29,22 @@ class ChatService:
             self.chat_history[session_id] = []
 
         user_msg = request.message.lower().strip()
-        reply = await self._process_message(user_msg)
 
-        # Store conversation in history
-        self.chat_history[session_id].append({
-            "user": request.message,
-            "bot": reply,
-            "timestamp": datetime.now()
-        })
+
+        initialState : State = {"message" : [],
+                                "user_query" : user_msg,
+                                "response":""}
+
+        agent_state = await self.agent.ainvoke(initialState)
+
+        reply = agent_state["response"]
+
+        # # Store conversation in history
+        # self.chat_history[session_id].append({
+        #     "user": request.message,
+        #     "bot": reply,
+        #     "timestamp": datetime.now()
+        # })
 
         return MessageResponseSchema(
             message=reply,

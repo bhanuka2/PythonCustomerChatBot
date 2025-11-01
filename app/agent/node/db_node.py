@@ -62,6 +62,7 @@ Respond with **only** the SQL query — nothing else.
     messages_LLM = [SystemMessage(content=system_message),HumanMessage(content=user_message)]
     response = chatGPT.invoke(messages_LLM)
 
-    state["response"] = response.content
+    state["sql_query"] = response.content
+    print(response.content)
     return state
 
